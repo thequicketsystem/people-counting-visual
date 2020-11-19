@@ -111,7 +111,7 @@ while True:
 			(W, H), True)
 
 	# set up circle to simulate RFID reader detection area
-	circleR, circleX, circleY = W // 6, W // 2, H // 2
+	circleR, circleX, circleY = W // 3, W // 2, H // 2
 
 	# initialize the current status along with our list of bounding
 	# box rectangles returned by either (1) our object detector or
@@ -234,8 +234,6 @@ while True:
 	cv2.putText(frame, f"count: {currentlyInFrame}", (10, H - 80), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 	cv2.putText(frame, f"inside: {insideReaderRange}", (10, H - 100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 	cv2.putText(frame, f"outside: {outsideReaderRange}", (10, H - 120), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-	
-
 	
 	# check to see if we should write the frame to disk
 	if writer is not None:
