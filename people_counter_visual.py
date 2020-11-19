@@ -187,11 +187,6 @@ while True:
 			# add the bounding box coordinates to the rectangles list
 			rects.append((startX, startY, endX, endY))
 
-	# draw a horizontal line in the center of the frame -- once an
-	# object crosses this line we will determine whether they were
-	# moving 'up' or 'down'
-	cv2.line(frame, (0, H // 2), (W, H // 2), (0, 255, 255), 2)
-
 	# draw a circle approximating the RFID reader's read area
 	cv2.circle(frame, (circleX, circleY), circleR, (0, 255, 255), 2)
 
@@ -237,8 +232,8 @@ while True:
 		cv2.circle(frame, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
 
 	cv2.putText(frame, f"count: {currentlyInFrame}", (10, H - 80), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-	cv2.putText(frame, f"inside: {insideReaderRange}", (10, H - 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-	cv2.putText(frame, f"outside: {outsideReaderRange}", (10, H - 40), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+	cv2.putText(frame, f"inside: {insideReaderRange}", (10, H - 100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+	cv2.putText(frame, f"outside: {outsideReaderRange}", (10, H - 120), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 	
 
 	
