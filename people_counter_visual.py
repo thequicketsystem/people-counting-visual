@@ -14,6 +14,7 @@ from pyimagesearch.centroidtracker import CentroidTracker
 from pyimagesearch.trackableobject import TrackableObject
 from imutils.video import VideoStream
 from imutils.video import FPS
+from math import sqrt
 import numpy as np
 import argparse
 import imutils
@@ -109,6 +110,9 @@ while True:
 		writer = cv2.VideoWriter(args["output"], fourcc, 30,
 			(W, H), True)
 
+	# set up circle to simulate RFID reader detection area
+	circleR, circleX, circleY = W // 6, W // 2, H // 2
+
 	# initialize the current status along with our list of bounding
 	# box rectangles returned by either (1) our object detector or
 	# (2) the correlation trackers
@@ -189,13 +193,15 @@ while True:
 	cv2.line(frame, (0, H // 2), (W, H // 2), (0, 255, 255), 2)
 
 	# draw a circle approximating the RFID reader's read area
-	cv2.circle(frame, (W // 2, H // 2), W // 4, (0, 255, 255), 2)
+	cv2.circle(frame, (circleX, circleY), circleR, (0, 255, 255), 2)
 
 	# use the centroid tracker to associate the (1) old object
 	# centroids with (2) the newly computed object centroids
 	objects = ct.update(rects)
 
 	currentlyInFrame = 0
+	insideReaderRange = 0
+	outsideReaderRange = 0
 
 	# loop over the tracked objects
 	for (objectID, centroid) in objects.items():
@@ -212,6 +218,14 @@ while True:
 		else:
 			currentlyInFrame += 1
 
+			# calculate distance from tracked person to center of circle
+			d = sqrt(pow(centroid[0] - circleX, 2) + pow(centroid[1] - circleY, 2))
+
+			if d < circleR:
+				insideReaderRange += 1
+			else:
+				outsideReaderRange += 1
+
 		# store the trackable object in our dictionary
 		trackableObjects[objectID] = to
 
@@ -222,7 +236,10 @@ while True:
 			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 		cv2.circle(frame, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
 
-	cv2.putText(frame, f"count: {currentlyInFrame}", (10, H - 80), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2) 
+	cv2.putText(frame, f"count: {currentlyInFrame}", (10, H - 80), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+	cv2.putText(frame, f"inside: {insideReaderRange}", (10, H - 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+	cv2.putText(frame, f"outside: {outsideReaderRange}", (10, H - 40), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+	
 
 	
 	# check to see if we should write the frame to disk
